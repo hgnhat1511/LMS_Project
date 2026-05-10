@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tree of Wisdom LMS{% endblock %}</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% include 'layouts/navbar.html' %}
+
+    <main style="min-height: 80vh; padding: 30px 0;">
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    {% include 'layouts/footer.html' %}
+
+    {% block extra_js %}{% endblock %}
+    
+    {% if user.is_authenticated %}
+    <div id="pomodoro-widget" style="position: fixed; bottom: 30px; right: 30px; background: var(--primary-green); color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 9999; display: flex; align-items: center; gap: 15px; border: 3px solid #e8f5e9; transition: all 0.3s;">
+        <div style="text-align: right;">
+            <div style="font-size: 0.75em; color: #fef08a; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;">🔥 Đang Focus</div>
+            <div id="pomo-time" style="font-size: 1.6em; font-family: monospace; font-weight: bold; line-height: 1;">25:00</div>
+        </div>
+        <button id="btn-pomo-start" style="background: var(--accent-green); color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.2s;">Bắt đầu</button>
+        <button id="btn-pomo-stop" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; display: none; transition: 0.2s;">Dừng</button>
+    </div>
+
+    <script>
+        const POMO_DURATION = 25 * 60 * 1000; // 25 phút
+        const timeDisplay = document.getElementById('pomo-time');
+        const btnStart = document.getElementById('btn-pomo-start');
+        const btnStop = document.getElementById('btn-pomo-stop');
+        const widget = document.getElementById('pomodoro-widget');
+        let timerInterval;
+
+        function formatTime(ms) {
+            if (ms < 0) ms = 0;
+            let m = Math.floor(ms / 60000);
+            let s = Math.floor((ms % 60000) / 1000);
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function sendPomoXp(actionStr) {
+            fetch('{% url "learning:update_pomodoro_xp" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ action: actionStr })
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+
+        function checkPomodoro() {
+            let endTime = localStorage.getItem('pomodoro_end');
+            if (endTime) {
+                endTime = parseInt(endTime);
+                let now = Date.now();
+                if (now < endTime) {
+                    btnStart.style.display = 'none';
+                    btnStop.style.display = 'block';
+                    widget.style.borderColor = '#f59e0b'; // Đổi màu viền khi đang chạy
+
+                    timerInterval = setInterval(() => {
+                        let remain = endTime - Date.now();
+                        if (remain <= 0) {
+                            clearInterval(timerInterval);
+                            completePomodoro();
+                        } else {
+                            timeDisplay.textContent = formatTime(remain);
+                        }
+                    }, 1000);
+                } else {
+                    localStorage.removeItem('pomodoro_end');
+                }
+            }
+        }
+
+        function completePomodoro() {
+            localStorage.removeItem('pomodoro_end');
+            alert("🎉 Chúc mừng! Bạn đã tập trung xuất sắc. (+50 XP)");
+            sendPomoXp('success');
+        }
+
+        function failPomodoro() {
+            clearInterval(timerInterval);
+            localStorage.removeItem('pomodoro_end');
+            alert("❌ BÁO ĐỘNG: Cây đã héo! Bạn vừa rời khỏi web (-20 XP)");
+            sendPomoXp('fail');
+        }
+
+        btnStart.addEventListener('click', () => {
+            localStorage.setItem('pomodoro_end', Date.now() + POMO_DURATION);
+            checkPomodoro();
+        });
+
+        btnStop.addEventListener('click', () => {
+            if(confirm("Bỏ cuộc sẽ bị trừ điểm! Bạn chắc chứ?")) {
+                failPomodoro();
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('is_navigating', 'true');
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => localStorage.removeItem('is_navigating'), 1000);
+        });
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                let isNavigating = localStorage.getItem('is_navigating');
+                let isRunning = localStorage.getItem('pomodoro_end') !== null;
+                if (isRunning && !isNavigating) {
+                    failPomodoro();
+                }
+            }
+        });
+
+        checkPomodoro();
+    </script>
+    {% endif %}
+</body>
+</html>

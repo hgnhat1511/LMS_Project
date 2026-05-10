@@ -1,0 +1,167 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Trắc nghiệm: {{ lesson.title }} - Tree of Wisdom{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* CSS Biến Radio Button thành Thẻ chọn (Choice Cards) hiện đại */
+    .choice-label {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        color: var(--text-dark);
+        background: white;
+        margin-bottom: 12px;
+    }
+    
+    .choice-label:hover {
+        border-color: #95d5b2;
+        background: #f8fafc;
+        transform: translateX(5px);
+    }
+    
+    /* Hiệu ứng khi được chọn (Hoạt động trên trình duyệt hiện đại) */
+    .choice-label:has(input:checked) {
+        border-color: var(--primary-green);
+        background: #e8f5e9;
+        box-shadow: 0 4px 15px rgba(10, 92, 54, 0.1);
+    }
+
+    .choice-label input[type="radio"] {
+        accent-color: var(--primary-green);
+        transform: scale(1.3);
+        margin-right: 15px;
+        cursor: pointer;
+    }
+
+    /* Hiệu ứng vòng tròn điểm số */
+    .score-circle {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 40px;
+        font-weight: 800;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+    }
+    .score-pass { border: 8px solid var(--primary-green); color: var(--primary-green); }
+    .score-fail { border: 8px solid #ef4444; color: #ef4444; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="background: linear-gradient(135deg, var(--primary-green), var(--accent-green)); padding: 30px 40px; border-radius: 20px; margin-bottom: 40px; color: white; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(46, 204, 113, 0.2);">
+        <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-pen-to-square" style="font-size: 28px; color: white;"></i>
+        </div>
+        <div>
+            <h2 style="margin: 0 0 5px 0; font-size: 28px; font-weight: 800;">Bài Tập: {{ lesson.title }}</h2>
+            <p style="margin: 0; font-size: 15px; opacity: 0.9;">Hãy chọn đáp án đúng nhất để nhận kinh nghiệm (XP) cho Cây Trí Tuệ.</p>
+        </div>
+    </div>
+
+    {% if is_submitted %}
+        <div class="glass-card" style="text-align: center; padding: 60px 20px; max-width: 600px; margin: 0 auto;">
+            
+            {% if percentage >= 50 %}
+                <i class="fa-solid fa-crown" style="font-size: 50px; color: #f59e0b; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--text-dark); font-size: 24px; font-weight: 800; margin: 0 0 20px 0;">Xuất sắc! Bạn đã vượt qua bài kiểm tra.</h3>
+                <div class="score-circle score-pass">
+                    {{ score }}/{{ total }}
+                </div>
+                <p style="font-size: 18px; color: var(--text-gray); font-weight: 600;">Độ chính xác: <span style="color: var(--primary-green);">{{ percentage }}%</span></p>
+                <div style="background: #fef08a; color: #854d0e; padding: 10px 20px; border-radius: 20px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; margin-top: 10px;">
+                    <i class="fa-solid fa-bolt"></i> Nhận được XP
+                </div>
+            {% else %}
+                <i class="fa-solid fa-face-sad-tear" style="font-size: 50px; color: #ef4444; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--text-dark); font-size: 24px; font-weight: 800; margin: 0 0 20px 0;">Cố gắng lên! Bạn cần ôn tập thêm.</h3>
+                <div class="score-circle score-fail">
+                    {{ score }}/{{ total }}
+                </div>
+                <p style="font-size: 18px; color: var(--text-gray); font-weight: 600;">Độ chính xác: <span style="color: #ef4444;">{{ percentage }}%</span></p>
+                <p style="color: var(--text-gray); font-size: 14px;">Hãy xem lại lý thuyết và thử lại nhé!</p>
+            {% endif %}
+            
+            <div style="margin-top: 40px; display: flex; justify-content: center; gap: 15px;">
+                <a href="{% url 'learning:quiz' lesson.id %}" class="btn-primary" style="background-color: var(--light-green); color: var(--primary-green); border: 2px solid var(--primary-green);">
+                    <i class="fa-solid fa-rotate-right" style="margin-right: 5px;"></i> Làm lại bài
+                </a>
+                <a href="{% url 'learning:subject_detail' lesson.subject.id %}" class="btn-primary">
+                    <i class="fa-solid fa-arrow-left" style="margin-right: 5px;"></i> Trở về bài học
+                </a>
+            </div>
+        </div>
+
+    {% else %}
+        <form method="POST">
+            {% csrf_token %}
+            
+            {% for q in questions %}
+                <div class="glass-card" style="margin-bottom: 30px; padding: 35px;">
+                    <h4 style="margin: 0 0 20px 0; color: var(--text-dark); font-size: 18px; font-weight: 700; line-height: 1.5;">
+                        <span style="color: var(--primary-green); margin-right: 5px;">Câu {{ forloop.counter }}:</span> {{ q.question_text }}
+                    </h4>
+                    
+                    <div style="display: flex; flex-direction: column;">
+                        {% for choice in q.choices.all %}
+                            <label class="choice-label">
+                                <input type="radio" name="question_{{ q.id }}" value="{{ choice.id }}" required>
+                                {{ choice.choice_text }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% empty %}
+                <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 2px dashed var(--border-color);">
+                    <i class="fa-solid fa-box-open" style="font-size: 40px; color: var(--border-color); margin-bottom: 15px;"></i>
+                    <h4 style="margin: 0; color: var(--text-dark); font-size: 18px;">Chưa có câu hỏi</h4>
+                    <p style="color: var(--text-gray); margin: 5px 0 0 0;">Giáo viên đang cập nhật ngân hàng câu hỏi cho bài này.</p>
+                </div>
+            {% endfor %}
+
+            {% if questions %}
+            <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; position: sticky; bottom: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); z-index: 10;">
+                <span style="color: var(--text-gray); font-weight: 600;">Đã trả lời: <span id="answered-count">0</span>/{{ questions.count }}</span>
+                <button type="submit" class="btn-primary" style="padding: 12px 35px; font-size: 16px; border-radius: 30px; box-shadow: 0 4px 15px rgba(10, 92, 54, 0.3);">
+                    Nộp bài <i class="fa-solid fa-check" style="margin-left: 5px;"></i>
+                </button>
+            </div>
+            {% endif %}
+        </form>
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    // Logic nhỏ để đếm số câu đã chọn (Tăng trải nghiệm UX)
+    document.addEventListener('DOMContentLoaded', () => {
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        const answeredCountDisplay = document.getElementById('answered-count');
+        const totalQuestions = {{ questions.count|default:0 }};
+        
+        function updateAnsweredCount() {
+            // Đếm số lượng radio button đang được checked
+            const checkedCount = document.querySelectorAll('input[type="radio"]:checked').length;
+            if(answeredCountDisplay) {
+                answeredCountDisplay.textContent = checkedCount;
+            }
+        }
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', updateAnsweredCount);
+        });
+    });
+</script>
+{% endblock %}

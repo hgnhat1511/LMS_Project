@@ -1,0 +1,12 @@
+{
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportAttributeAccessIssue": "none"
+    },
+    "files.associations": {
+        "**/*.html": "django-html",
+        "**/*.css": "css"
+    },
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    }
+}

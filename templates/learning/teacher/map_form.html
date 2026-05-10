@@ -1,0 +1,169 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Ra đề Bản đồ - Tree of Wisdom{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    /* CSS cho form nhập liệu */
+    .glass-card form input[type="text"],
+    .glass-card form input[type="number"],
+    .glass-card form select,
+    .glass-card form textarea {
+        width: 100% !important;
+        padding: 14px 16px !important;
+        border: 2px solid var(--border-color) !important;
+        border-radius: 10px !important;
+        outline: none !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 15px !important;
+        color: var(--text-dark) !important;
+        background: #f8fafc !important;
+        transition: all 0.2s ease !important;
+        box-sizing: border-box !important;
+    }
+
+    .glass-card form input:focus,
+    .glass-card form select:focus,
+    .glass-card form textarea:focus {
+        border-color: #ea580c !important; /* Tông cam cho GIS */
+        background: white !important;
+        box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1) !important;
+    }
+
+    /* CSS cho Bản đồ Leaflet bo góc */
+    #map { 
+        height: 450px; 
+        width: 100%; 
+        border-radius: 16px; 
+        border: 2px solid var(--border-color); 
+        z-index: 1; 
+        margin-bottom: 20px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+        <div style="width: 70px; height: 70px; background: #ffedd5; border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(234, 88, 12, 0.1);">
+            <i class="fa-solid fa-map-location-dot" style="font-size: 30px; color: #ea580c;"></i>
+        </div>
+        <div>
+            <h2 style="color: var(--text-dark); margin: 0 0 5px 0; font-size: 28px; font-weight: 800;">Ra Đề: Trắc Nghiệm Bản Đồ</h2>
+            <p style="color: var(--text-gray); margin: 0; font-size: 15px;">Nhập câu hỏi và <strong>Click trực tiếp lên bản đồ</strong> để thiết lập tọa độ đích.</p>
+        </div>
+    </div>
+
+    <div class="glass-card" style="padding: 40px;">
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px;">
+                <div style="display: flex; flex-direction: column; gap: 25px;">
+                    <div>
+                        <label style="display: block; font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 10px;">
+                            <i class="fa-solid fa-book" style="margin-right: 5px; color: var(--text-gray);"></i> {{ form.lesson.label }}
+                        </label>
+                        {{ form.lesson }}
+                        {% for error in form.lesson.errors %}<p style="color: #ef4444; font-size: 13px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 10px;">
+                            <i class="fa-solid fa-bullseye" style="margin-right: 5px; color: var(--text-gray);"></i> {{ form.tolerance_radius.label }}
+                        </label>
+                        {{ form.tolerance_radius }}
+                        <p style="font-size: 13px; color: var(--text-gray); margin: 5px 0 0 0;"><i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> Học sinh click trong phạm vi bán kính này (km) sẽ được tính là Đúng.</p>
+                        {% for error in form.tolerance_radius.errors %}<p style="color: #ef4444; font-size: 13px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 700; font-size: 15px; color: #ea580c; margin-bottom: 10px;">
+                        <i class="fa-regular fa-compass" style="margin-right: 5px;"></i> {{ form.question_text.label }}
+                    </label>
+                    {{ form.question_text }}
+                    {% for error in form.question_text.errors %}<p style="color: #ef4444; font-size: 13px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+                </div>
+            </div>
+            
+            <div style="background: var(--bg-main); padding: 25px; border-radius: 16px; border: 1px dashed var(--border-color);">
+                <label style="font-weight: 800; color: #ea580c; display: block; margin-bottom: 15px; font-size: 16px;">
+                    <i class="fa-solid fa-hand-pointer fa-bounce"></i> Click lên bản đồ để chốt tọa độ chuẩn:
+                </label>
+                
+                <div id="map"></div>
+
+                <div style="display: none;">
+                    {{ form.lat }}
+                    {{ form.lng }}
+                </div>
+                
+                <div id="coordinate-display" style="background-color: white; padding: 15px; border-radius: 12px; text-align: center; color: var(--text-gray); font-weight: 600; border: 1px solid var(--border-color); font-size: 15px;">
+                    <i class="fa-solid fa-satellite-dish" style="margin-right: 5px;"></i> Chưa nhận được tín hiệu tọa độ. Hãy click lên bản đồ!
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 30px;">
+                <a href="{% url 'learning:teacher_dashboard' %}" style="color: var(--text-gray); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-gray)'">
+                    <i class="fa-solid fa-arrow-left"></i> Về Dashboard
+                </a>
+                
+                <button type="submit" id="btn-submit" class="btn-primary" disabled style="background-color: var(--bg-main); color: var(--text-gray); padding: 14px 35px; border-radius: 12px; font-size: 16px; transition: 0.3s;">
+                    <i class="fa-solid fa-map-pin" style="margin-right: 8px;"></i> Lưu Mốc Bản Đồ
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([16.047079, 108.206230], 5); // Center VN
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var currentMarker = null;
+    
+    // Lưu ý: Đảm bảo các input ẩn của Django có id tương ứng
+    // Mặc định form của Django sẽ tạo id là id_lat và id_lng
+    var latInput = document.getElementById('id_lat');
+    var lngInput = document.getElementById('id_lng');
+    var displayTxt = document.getElementById('coordinate-display');
+    var btnSubmit = document.getElementById('btn-submit');
+
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        if (currentMarker) {
+            map.removeLayer(currentMarker);
+        }
+        currentMarker = L.marker([lat, lng]).addTo(map);
+
+        if(latInput && lngInput) {
+            latInput.value = lat;
+            lngInput.value = lng;
+        }
+        
+        // Cập nhật dòng hiển thị
+        displayTxt.innerHTML = "<i class='fa-solid fa-crosshairs' style='margin-right: 5px;'></i> Đã khóa mục tiêu: Vĩ độ <strong>" + lat.toFixed(4) + "</strong> | Kinh độ <strong>" + lng.toFixed(4) + "</strong>";
+        displayTxt.style.color = "#16a34a"; // Đổi sang màu xanh khi đã chọn
+        displayTxt.style.borderColor = "#16a34a";
+        displayTxt.style.background = "#f0fdf4";
+        
+        // Bật sáng nút Submit
+        btnSubmit.disabled = false;
+        btnSubmit.style.backgroundColor = "#ea580c"; // Trở về màu cam
+        btnSubmit.style.color = "white";
+        btnSubmit.style.boxShadow = "0 4px 15px rgba(234, 88, 12, 0.3)";
+        btnSubmit.style.cursor = "pointer";
+    });
+</script>
+{% endblock %}

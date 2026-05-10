@@ -1,0 +1,47 @@
+/* Tích hợp Font chữ Inter giống Figma */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-green: #0a5c36; /* Xanh lá đậm (Nút bấm, Logo) */
+    --light-green: #e8f5e9; /* Xanh nhạt (Nền active) */
+    --accent-green: #2ecc71; /* Xanh sáng (Thanh tiến trình) */
+    --text-dark: #1f2937;
+    --text-gray: #6b7280;
+    --bg-main: #f8fafc; /* Nền xám sáng của toàn trang */
+    --white: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+}
+
+/* Kiểu dáng Card chuẩn Figma (Dùng cho mọi bảng, khối) */
+.glass-card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+}
+
+/* Nút bấm chuẩn Figma */
+.btn-primary {
+    background-color: var(--primary-green);
+    color: var(--white);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn-primary:hover {
+    background-color: #074628;
+}

@@ -1,0 +1,133 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Phòng Tập Trung (Pomodoro) - LMS Đa Môn{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 50px auto; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center;">
+    
+    <h2 style="color: #e74c3c; margin-bottom: 5px;">🍅 Phòng Tập Trung Tuyệt Đối</h2>
+    <p style="color: #7f8c8d; margin-bottom: 30px;">Hoàn thành 25 phút để nhận XP. Rời tab sẽ bị phạt!</p>
+
+    <div style="background-color: #2c3e50; color: white; width: 250px; height: 250px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 10px solid #ecf0f1; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+        <span id="timer-display" style="font-size: 4em; font-weight: bold; font-family: monospace;">25:00</span>
+    </div>
+
+    <div id="status-message" style="margin-top: 20px; font-weight: bold; font-size: 1.2em; height: 30px; color: #27ae60;">
+        Sẵn sàng chưa?
+    </div>
+
+    <div style="margin-top: 30px; display: flex; justify-content: center; gap: 15px;">
+        <button id="btn-start" style="background-color: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 1.1em; font-weight: bold; cursor: pointer;">
+            Bắt đầu Focus
+        </button>
+        <button id="btn-stop" style="background-color: #e74c3c; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 1.1em; font-weight: bold; cursor: pointer; display: none;">
+            Hủy bỏ (Trừ XP)
+        </button>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    let timerInterval;
+    let isFocusing = false;
+    let timeLeft = 25 * 60; // 25 phút
+    
+    // Lấy mã bảo mật CSRF Token của Django để cho phép gửi dữ liệu POST
+    const csrfToken = '{{ csrf_token }}';
+
+    const display = document.getElementById('timer-display');
+    const btnStart = document.getElementById('btn-start');
+    const btnStop = document.getElementById('btn-stop');
+    const statusMsg = document.getElementById('status-message');
+
+    // Hàm gọi API về Backend
+    function sendXpUpdate(actionStr) {
+        fetch('{% url "learning:update_pomodoro_xp" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken // Bắt buộc phải có thẻ bảo mật này
+            },
+            body: JSON.stringify({ action: actionStr })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                console.log("Đã cập nhật XP trên Database. XP hiện tại:", data.new_xp);
+            }
+        });
+    }
+
+    function updateDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+        isFocusing = true;
+        btnStart.style.display = 'none';
+        btnStop.style.display = 'inline-block';
+        statusMsg.textContent = 'Đang tập trung... Không được rời tab!';
+        statusMsg.style.color = '#e67e22';
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateDisplay();
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                finishPomodoroSuccess();
+            }
+        }, 1000);
+    }
+
+    function finishPomodoroSuccess() {
+        isFocusing = false;
+        statusMsg.textContent = '🎉 Tuyệt vời! Bạn đã tập trung xong (+50 XP)';
+        statusMsg.style.color = '#27ae60';
+        resetUI();
+        
+        // Gọi API thưởng điểm
+        sendXpUpdate('success');
+    }
+
+    function failPomodoro() {
+        clearInterval(timerInterval);
+        isFocusing = false;
+        timeLeft = 25 * 60;
+        updateDisplay();
+        
+        statusMsg.textContent = '❌ Cây đã héo! Bạn vừa rời tab (-20 XP)';
+        statusMsg.style.color = '#e74c3c';
+        resetUI();
+        
+        // Gọi API phạt điểm
+        sendXpUpdate('fail');
+    }
+
+    function resetUI() {
+        btnStart.style.display = 'inline-block';
+        btnStop.style.display = 'none';
+        btnStart.textContent = 'Thử lại';
+    }
+
+    btnStart.addEventListener('click', startTimer);
+    
+    btnStop.addEventListener('click', () => {
+        if(confirm("Bạn có chắc muốn bỏ cuộc? Cây sẽ héo và mất XP đấy!")) {
+            failPomodoro();
+        }
+    });
+
+    // Phát hiện gian lận (Chuyển tab)
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden && isFocusing) {
+            failPomodoro();
+            alert("BÁO ĐỘNG: Bạn vừa rời khỏi phòng học! Cây trí tuệ đã bị trừ 20 XP.");
+        }
+    });
+
+    updateDisplay();
+</script>
+{% endblock %}
+{% endblock %}

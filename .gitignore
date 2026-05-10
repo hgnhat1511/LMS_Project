@@ -1,0 +1,14 @@
+# Python & Django
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Database (Không đẩy database local lên tránh đụng độ với các bạn khác)
+db.sqlite3
+
+# OS generated files
+.DS_Store
+Thumbs.db

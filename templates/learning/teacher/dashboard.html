@@ -1,0 +1,96 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Bảng Điều Khiển Giáo Viên - Tree of Wisdom{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
+        <div>
+            <h2 style="color: var(--text-dark); margin: 0 0 5px 0; font-size: 28px; font-weight: 800;">
+                <i class="fa-solid fa-chalkboard-user" style="color: var(--primary-green); margin-right: 10px;"></i>
+                Không gian Quản trị
+            </h2>
+            <p style="color: var(--text-gray); margin: 0; font-size: 15px;">Chào mừng giáo viên {{ user.username }}, chúc thầy/cô một ngày làm việc hiệu quả!</p>
+        </div>
+        <span style="background-color: var(--light-green); color: var(--primary-green); padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid #bbf7d0;">
+            <i class="fa-solid fa-shield-halved" style="margin-right: 5px;"></i> Quyền: Giảng viên
+        </span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px;">
+        <div class="glass-card" style="display: flex; align-items: center; gap: 20px; padding: 30px;">
+            <div style="width: 70px; height: 70px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-users" style="font-size: 30px; color: #0284c7;"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0; color: var(--text-gray); font-size: 15px; font-weight: 600;">Tổng Học sinh</h3>
+                <div style="font-size: 32px; font-weight: 800; color: var(--text-dark);">{{ total_students }}</div>
+            </div>
+        </div>
+        
+        <div class="glass-card" style="display: flex; align-items: center; gap: 20px; padding: 30px;">
+            <div style="width: 70px; height: 70px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-book" style="font-size: 30px; color: #16a34a;"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0; color: var(--text-gray); font-size: 15px; font-weight: 600;">Tổng Môn học</h3>
+                <div style="font-size: 32px; font-weight: 800; color: var(--text-dark);">{{ total_subjects }}</div>
+            </div>
+        </div>
+
+        <div class="glass-card" style="display: flex; align-items: center; gap: 20px; padding: 30px;">
+            <div style="width: 70px; height: 70px; background: #ffedd5; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-file-video" style="font-size: 30px; color: #ea580c;"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0; color: var(--text-gray); font-size: 15px; font-weight: 600;">Bài giảng đã soạn</h3>
+                <div style="font-size: 32px; font-weight: 800; color: var(--text-dark);">{{ total_lessons }}</div>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: var(--text-dark); font-size: 22px; font-weight: 700; margin-bottom: 25px; border-left: 5px solid var(--primary-green); padding-left: 15px;">
+        🛠️ Bộ Công Cụ Biên Soạn
+    </h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px;">
+        
+        <div class="glass-card" style="text-align: center; padding: 30px; transition: 0.2s;" onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='translateY(0)';">
+            <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-solid fa-file-pen" style="font-size: 24px; color: #475569;"></i>
+            </div>
+            <h4 style="color: var(--text-dark); margin: 0 0 10px 0; font-size: 18px; font-weight: 700;">Soạn Lý Thuyết</h4>
+            <p style="color: var(--text-gray); font-size: 14px; margin: 0 0 20px 0; line-height: 1.5; min-height: 45px;">Tạo khung bài học mới và viết nội dung HTML.</p>
+            <a href="{% url 'learning:teacher_lesson_add' %}" class="btn-primary" style="background-color: #475569; width: 100%; box-sizing: border-box;">Soạn bài &rarr;</a>
+        </div>
+
+        <div class="glass-card" style="text-align: center; padding: 30px; transition: 0.2s;" onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='translateY(0)';">
+            <div style="width: 60px; height: 60px; background: #f3e8ff; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-solid fa-list-check" style="font-size: 24px; color: #9333ea;"></i>
+            </div>
+            <h4 style="color: var(--text-dark); margin: 0 0 10px 0; font-size: 18px; font-weight: 700;">Tạo Trắc Nghiệm</h4>
+            <p style="color: var(--text-gray); font-size: 14px; margin: 0 0 20px 0; line-height: 1.5; min-height: 45px;">Viết câu hỏi A, B, C, D cho các bài học đã tạo.</p>
+            <a href="{% url 'learning:teacher_quiz_add' %}" class="btn-primary" style="background-color: #9333ea; width: 100%; box-sizing: border-box;">Thêm Quiz &rarr;</a>
+        </div>
+
+        <div class="glass-card" style="text-align: center; padding: 30px; transition: 0.2s;" onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='translateY(0)';">
+            <div style="width: 60px; height: 60px; background: #ffedd5; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-solid fa-map-location-dot" style="font-size: 24px; color: #ea580c;"></i>
+            </div>
+            <h4 style="color: var(--text-dark); margin: 0 0 10px 0; font-size: 18px; font-weight: 700;">Cắm Mốc Bản Đồ</h4>
+            <p style="color: var(--text-gray); font-size: 14px; margin: 0 0 20px 0; line-height: 1.5; min-height: 45px;">Tạo trắc nghiệm click tọa độ tương tác trên bản đồ.</p>
+            <a href="{% url 'learning:teacher_map_add' %}" class="btn-primary" style="background-color: #ea580c; width: 100%; box-sizing: border-box;">Chỉ định mốc &rarr;</a>
+        </div>
+
+        <div class="glass-card" style="text-align: center; padding: 30px; transition: 0.2s;" onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='translateY(0)';">
+            <div style="width: 60px; height: 60px; background: var(--light-green); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-regular fa-clone" style="font-size: 24px; color: var(--primary-green);"></i>
+            </div>
+            <h4 style="color: var(--text-dark); margin: 0 0 10px 0; font-size: 18px; font-weight: 700;">Soạn Flashcard</h4>
+            <p style="color: var(--text-gray); font-size: 14px; margin: 0 0 20px 0; line-height: 1.5; min-height: 45px;">Tạo thẻ ghi nhớ lật 2 mặt giúp học sinh học nhanh.</p>
+            <a href="{% url 'learning:teacher_flashcard_add' %}" class="btn-primary" style="width: 100%; box-sizing: border-box;">Thêm Thẻ &rarr;</a>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

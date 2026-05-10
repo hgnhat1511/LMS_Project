@@ -1,0 +1,92 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Đăng ký - Tree of Wisdom{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 75vh; padding: 40px 0;">
+    
+    <div class="glass-card" style="width: 100%; max-width: 450px; padding: 40px; box-sizing: border-box;">
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="width: 60px; height: 60px; background-color: var(--light-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                <i class="fa-solid fa-seedling" style="color: var(--primary-green); font-size: 30px;"></i>
+            </div>
+            <h2 style="margin: 0; color: var(--text-dark); font-weight: 700; font-size: 24px;">Gieo Hạt Mầm Mới</h2>
+            <p style="color: var(--text-gray); font-size: 14px; margin-top: 8px;">Tạo tài khoản để bắt đầu hành trình học tập</p>
+        </div>
+
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-bottom: 8px;">
+                        {{ field.label }}
+                    </label>
+                    <div style="position: relative;">
+                        {% if field.name == 'username' %}
+                            <i class="fa-solid fa-user" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray);"></i>
+                        {% elif 'password' in field.name %}
+                            <i class="fa-solid fa-lock" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray);"></i>
+                        {% elif field.name == 'email' %}
+                            <i class="fa-solid fa-envelope" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray);"></i>
+                        {% else %}
+                            <i class="fa-solid fa-pen" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray);"></i>
+                        {% endif %}
+                        
+                        {{ field }}
+                    </div>
+                    
+                    {% if field.errors %}
+                        <div style="color: #ef4444; font-size: 12px; margin-top: 5px; font-weight: 500;">
+                            {% for error in field.errors %}
+                                <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    {% if field.help_text %}
+                        <p style="font-size: 11px; color: var(--text-gray); margin: 5px 0 0 0;">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                <div style="margin-bottom: 20px; color: #ef4444; font-size: 13px; text-align: center; background-color: #fee2e2; padding: 10px; border-radius: 8px; font-weight: 500;">
+                    {% for error in form.non_field_errors %}
+                        <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn-primary" style="width: 100%; padding: 14px; font-size: 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(10, 92, 54, 0.2); margin-top: 10px;">
+                Đăng ký ngay <i class="fa-solid fa-user-plus" style="margin-left: 5px;"></i>
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 25px; color: var(--text-gray); font-size: 14px;">
+            Đã có tài khoản? <a href="{% url 'accounts:login' %}" style="color: var(--primary-green); font-weight: 600; text-decoration: none;">Đăng nhập tại đây</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    .glass-card form input[type="text"],
+    .glass-card form input[type="password"],
+    .glass-card form input[type="email"] {
+        width: 100% !important;
+        padding: 12px 15px 12px 40px !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px !important;
+        outline: none !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 14px !important;
+        transition: 0.2s !important;
+        box-sizing: border-box !important;
+    }
+    .glass-card form input[type="text"]:focus,
+    .glass-card form input[type="password"]:focus,
+    .glass-card form input[type="email"]:focus {
+        border-color: var(--primary-green) !important;
+    }
+</style>
+{% endblock content %}

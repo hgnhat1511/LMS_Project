@@ -1,0 +1,65 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Bản Đồ Học Tập - LMS Đa Môn{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="background: linear-gradient(135deg, var(--primary-green), var(--accent-green)); border-radius: 20px; padding: 40px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(46, 204, 113, 0.2);">
+        <div>
+            <h1 style="margin: 0 0 10px 0; font-size: 32px; font-weight: 700;">Chào mừng trở lại, {{ user.username }}! 🌱</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.9;">Hôm nay là một ngày tuyệt vời để tưới nước cho Cây Trí Tuệ của bạn.</p>
+        </div>
+        
+        <div style="text-align: right; background: rgba(255, 255, 255, 0.15); padding: 15px 25px; border-radius: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+            <div style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Sức mạnh hiện tại</div>
+            <div style="font-size: 36px; font-weight: 700; color: #fef08a;">
+                <i class="fa-solid fa-bolt" style="font-size: 28px;"></i> {{ user.profile.total_xp }}
+            </div>
+        </div>
+    </div>
+
+    {% for grade in grades %}
+        <div style="margin-bottom: 50px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <h2 style="color: var(--text-dark); margin: 0; font-size: 24px; font-weight: 700;"><i class="fa-solid fa-book-bookmark" style="color: var(--primary-green); margin-right: 10px;"></i>{{ grade.name }}</h2>
+                    <p style="color: var(--text-gray); font-size: 14px; margin: 5px 0 0 35px;">{{ grade.description }}</p>
+                </div>
+                <div style="background: var(--light-green); color: var(--primary-green); padding: 6px 15px; border-radius: 20px; font-weight: 600; font-size: 14px;">
+                    {{ grade.subjects.count }} Môn học
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;">
+                {% for subject in grade.subjects.all %}
+                    <div class="glass-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease;" 
+                         onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)';" 
+                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.03)';">
+                        
+                        <div style="height: 160px; background: var(--light-green); display: flex; align-items: center; justify-content: center; position: relative;">
+                            <i class="fa-solid fa-book-open" style="font-size: 50px; color: var(--accent-green); opacity: 0.5;"></i>
+                        </div>
+
+                        <div style="padding: 25px; display: flex; flex-direction: column; flex-grow: 1;">
+                            <h3 style="margin: 0 0 10px 0; color: var(--text-dark); font-size: 20px; font-weight: 700;">{{ subject.name }}</h3>
+                            <p style="color: var(--text-gray); font-size: 14px; margin: 0 0 20px 0; line-height: 1.6; flex-grow: 1;">
+                                Khám phá các bài học thú vị trong môn {{ subject.name }}.
+                            </p>
+                            
+                            <a href="{% url 'learning:subject_detail' subject.id %}" class="btn-primary" style="text-align: center; width: 100%; box-sizing: border-box; font-size: 15px;">
+                                Vào học &rarr;
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: white; border-radius: 16px; border: 2px dashed var(--border-color);">
+                        <i class="fa-solid fa-folder-open" style="font-size: 30px; color: var(--border-color); margin-bottom: 10px;"></i>
+                        <p style="color: var(--text-gray); margin: 0; font-style: italic;">Chưa có môn học nào trong khối này.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock content %}

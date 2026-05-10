@@ -1,0 +1,120 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Soạn Trắc Nghiệm - Tree of Wisdom{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Ép CSS cho các thẻ form mặc định của Django render ra */
+    .glass-card form input[type="text"],
+    .glass-card form select,
+    .glass-card form textarea {
+        width: 100% !important;
+        padding: 14px 16px !important;
+        border: 2px solid var(--border-color) !important;
+        border-radius: 10px !important;
+        outline: none !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 15px !important;
+        color: var(--text-dark) !important;
+        background: #f8fafc !important;
+        transition: all 0.2s ease !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Hiệu ứng khi đang gõ chữ - Dùng viền màu tím cho đồng bộ với icon Quiz */
+    .glass-card form input:focus,
+    .glass-card form select:focus,
+    .glass-card form textarea:focus {
+        border-color: #9333ea !important;
+        background: white !important;
+        box-shadow: 0 0 0 4px rgba(147, 51, 234, 0.1) !important;
+    }
+
+    /* Chiều cao cho textarea của câu hỏi */
+    .glass-card form textarea {
+        min-height: 120px !important;
+        resize: vertical !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+        <div style="width: 70px; height: 70px; background: #f3e8ff; border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(147, 51, 234, 0.1);">
+            <i class="fa-solid fa-list-check" style="font-size: 30px; color: #9333ea;"></i>
+        </div>
+        <div>
+            <h2 style="color: var(--text-dark); margin: 0 0 5px 0; font-size: 28px; font-weight: 800;">Soạn Câu Hỏi Trắc Nghiệm</h2>
+            <p style="color: var(--text-gray); margin: 0; font-size: 15px;">Thêm các câu hỏi A, B, C, D để thử thách học sinh.</p>
+        </div>
+    </div>
+
+    <div class="glass-card" style="padding: 40px;">
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 10px;">
+                    <i class="fa-solid fa-book" style="margin-right: 5px; color: var(--text-gray);"></i> {{ form.lesson.label }}
+                </label>
+                {{ form.lesson }}
+                {% for error in form.lesson.errors %}<p style="color: #ef4444; font-size: 13px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <label style="display: block; font-weight: 700; font-size: 15px; color: #9333ea; margin-bottom: 10px;">
+                    <i class="fa-solid fa-circle-question" style="margin-right: 5px;"></i> {{ form.question_text.label }}
+                </label>
+                {{ form.question_text }}
+                {% for error in form.question_text.errors %}<p style="color: #ef4444; font-size: 13px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div style="background: var(--bg-main); padding: 25px; border-radius: 16px; border: 1px dashed var(--border-color); margin-bottom: 30px;">
+                <h4 style="margin: 0 0 20px 0; color: var(--text-dark); font-size: 16px; font-weight: 700;">Nhập 4 phương án lựa chọn:</h4>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 14px; color: var(--text-gray); margin-bottom: 8px;">{{ form.choice_1.label }}</label>
+                        {{ form.choice_1 }}
+                        {% for error in form.choice_1.errors %}<p style="color: #ef4444; font-size: 12px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 14px; color: var(--text-gray); margin-bottom: 8px;">{{ form.choice_2.label }}</label>
+                        {{ form.choice_2 }}
+                        {% for error in form.choice_2.errors %}<p style="color: #ef4444; font-size: 12px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 14px; color: var(--text-gray); margin-bottom: 8px;">{{ form.choice_3.label }}</label>
+                        {{ form.choice_3 }}
+                        {% for error in form.choice_3.errors %}<p style="color: #ef4444; font-size: 12px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 14px; color: var(--text-gray); margin-bottom: 8px;">{{ form.choice_4.label }}</label>
+                        {{ form.choice_4 }}
+                        {% for error in form.choice_4.errors %}<p style="color: #ef4444; font-size: 12px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-weight: 700; font-size: 15px; color: var(--primary-green); margin-bottom: 10px;">
+                    <i class="fa-solid fa-check-double" style="margin-right: 5px;"></i> {{ form.correct_choice.label }}
+                </label>
+                {{ form.correct_choice }}
+                {% for error in form.correct_choice.errors %}<p style="color: #ef4444; font-size: 13px; margin: 5px 0 0 0;">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 30px;">
+                <a href="{% url 'learning:teacher_dashboard' %}" style="color: var(--text-gray); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-gray)'">
+                    <i class="fa-solid fa-arrow-left"></i> Về Dashboard
+                </a>
+                
+                <button type="submit" class="btn-primary" style="background-color: #9333ea; padding: 14px 35px; border-radius: 12px; font-size: 16px; box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);">
+                    <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Thêm Câu Hỏi Này
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

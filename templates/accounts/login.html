@@ -1,0 +1,60 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Đăng nhập - LMS Đa Môn{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+    
+    <div class="glass-card" style="width: 100%; max-width: 420px; padding: 40px; box-sizing: border-box;">
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="width: 60px; height: 60px; background-color: var(--light-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                <i class="fa-solid fa-leaf" style="color: var(--primary-green); font-size: 30px;"></i>
+            </div>
+            <h2 style="margin: 0; color: var(--text-dark); font-weight: 700; font-size: 24px;">Đăng nhập</h2>
+            <p style="color: var(--text-gray); font-size: 14px; margin-top: 8px;">Chào mừng bạn trở lại với hệ thống!</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-bottom: 8px;">Tên đăng nhập</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-user" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray);"></i>
+                    <input type="text" name="username" required 
+                           style="width: 100%; padding: 12px 15px 12px 40px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; font-family: 'Inter'; font-size: 14px; transition: 0.2s; box-sizing: border-box;" 
+                           onfocus="this.style.borderColor='var(--primary-green)'" 
+                           onblur="this.style.borderColor='var(--border-color)'" 
+                           placeholder="Nhập tên tài khoản">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-bottom: 8px;">Mật khẩu</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-lock" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray);"></i>
+                    <input type="password" name="password" required 
+                           style="width: 100%; padding: 12px 15px 12px 40px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; font-family: 'Inter'; font-size: 14px; transition: 0.2s; box-sizing: border-box;" 
+                           onfocus="this.style.borderColor='var(--primary-green)'" 
+                           onblur="this.style.borderColor='var(--border-color)'" 
+                           placeholder="••••••••">
+                </div>
+            </div>
+
+            {% if form.errors %}
+            <div style="margin-bottom: 20px; color: #ef4444; font-size: 13px; text-align: center; background-color: #fee2e2; padding: 10px; border-radius: 8px; font-weight: 500;">
+                <i class="fa-solid fa-circle-exclamation"></i> Tên đăng nhập hoặc mật khẩu không đúng!
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-primary" style="width: 100%; padding: 14px; font-size: 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(10, 92, 54, 0.2);">
+                Vào hệ thống <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i>
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 25px; color: var(--text-gray); font-size: 14px;">
+            Chưa có tài khoản? <a href="{% url 'accounts:register' %}" style="color: var(--primary-green); font-weight: 600; text-decoration: none;">Đăng ký ngay</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'layouts/base.html' %}
+{% block title %}{{ subject.name }} - Tree of Wisdom{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="background: linear-gradient(135deg, var(--light-green), #d1fae5); padding: 40px; border-radius: 20px; margin-bottom: 40px; display: flex; align-items: center; gap: 20px; border: 1px solid var(--border-color);">
+        <div style="width: 80px; height: 80px; background: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+            <i class="fa-solid fa-book-bookmark" style="font-size: 40px; color: var(--primary-green);"></i>
+        </div>
+        <div>
+            <span style="background: var(--primary-green); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">{{ subject.grade.name }}</span>
+            <h2 style="margin: 10px 0 5px 0; color: var(--text-dark); font-size: 32px; font-weight: 800;">{{ subject.name }}</h2>
+            <p style="margin: 0; color: var(--text-gray); font-size: 15px;">Chọn một bài học bên dưới để bắt đầu hành trình tích lũy kiến thức.</p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="color: var(--text-dark); margin: 0; font-size: 22px; font-weight: 700;">Lộ trình Bài học</h3>
+        <span style="color: var(--text-gray); font-weight: 600; font-size: 14px;">Tổng cộng: {{ lessons.count }} bài</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        {% for lesson in lessons %}
+            <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; transition: 0.2s;" 
+                 onmouseover="this.style.borderColor='var(--primary-green)'; this.style.transform='translateX(5px)';" 
+                 onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateX(0)';">
+                
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="width: 45px; height: 45px; background: var(--bg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--text-gray); font-size: 18px; border: 2px solid var(--border-color);">
+                        {{ lesson.order }}
+                    </div>
+                    
+                    <div>
+                        <h4 style="margin: 0 0 5px 0; color: var(--text-dark); font-size: 18px; font-weight: 700;">{{ lesson.title }}</h4>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span style="color: var(--text-gray); font-size: 13px;"><i class="fa-regular fa-clock" style="margin-right: 5px;"></i>Tích lũy XP</span>
+                            
+                            {% if lesson.is_gis_map %}
+                                <span style="background-color: #fef3c7; color: #d97706; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;"><i class="fa-solid fa-map-location-dot" style="margin-right: 4px;"></i>Bản đồ GIS</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 12px;">
+                    <a href="{% url 'learning:theory' lesson.id %}" style="background-color: var(--light-green); color: var(--primary-green); padding: 10px 20px; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; transition: 0.2s;" 
+                       onmouseover="this.style.backgroundColor='var(--primary-green)'; this.style.color='white';" 
+                       onmouseout="this.style.backgroundColor='var(--light-green)'; this.style.color='var(--primary-green)';">
+                        <i class="fa-solid fa-book-open" style="margin-right: 5px;"></i> Lý thuyết
+                    </a>
+                    
+                    <a href="{% url 'learning:quiz' lesson.id %}" style="background-color: var(--primary-green); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 10px rgba(10, 92, 54, 0.2); transition: 0.2s;" 
+                       onmouseover="this.style.transform='translateY(-2px)';" 
+                       onmouseout="this.style.transform='translateY(0)';">
+                        <i class="fa-solid fa-pen-to-square" style="margin-right: 5px;"></i> Bài tập
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div style="text-align: center; padding: 40px 20px; background: white; border-radius: 16px; border: 2px dashed var(--border-color);">
+                <i class="fa-solid fa-person-digging" style="font-size: 40px; color: var(--border-color); margin-bottom: 15px;"></i>
+                <h4 style="margin: 0 0 5px 0; color: var(--text-dark); font-size: 18px;">Bài học đang được biên soạn</h4>
+                <p style="color: var(--text-gray); margin: 0; font-size: 14px;">Giáo viên đang chuẩn bị nội dung cho môn học này. Bạn quay lại sau nhé!</p>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div style="margin-top: 40px;">
+        <a href="{% url 'learning:catalog' %}" style="color: var(--text-gray); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;" 
+           onmouseover="this.style.color='var(--primary-green)';" 
+           onmouseout="this.style.color='var(--text-gray)';">
+            <i class="fa-solid fa-arrow-left"></i> Quay lại Bản đồ học tập
+        </a>
+    </div>
+</div>
+{% endblock content %}
