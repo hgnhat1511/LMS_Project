@@ -1,0 +1,37 @@
+{
+    "grades": [
+    {
+        "name": "Khối 4",
+        "level": 4,
+        "subjects": [
+        {
+            "name": "Tiếng Việt",
+            "lessons": [
+            {
+                "title": "Danh từ và Đại từ",
+                "theory_content": "<div class='ck-content'><h3>1. Khái niệm</h3><p><strong>Danh từ</strong> chỉ sự vật. <strong>Đại từ</strong> dùng để xưng hô.</p></div>",
+                "is_gis": false,
+                "flashcards": [
+                {"front": "Danh từ", "back": "Chỉ sự vật, hiện tượng"}
+                ],
+                "quizzes": [
+                {"question": "Từ nào là danh từ?", "choices": ["Cái bàn", "Chạy", "Xanh", "Đẹp"], "correct": 0}
+                ]
+            }
+            ]
+        },
+        {
+            "name": "Lịch sử & Địa lý",
+            "lessons": [
+            {
+                "title": "Bản đồ Bắc Bộ",
+                "theory_content": "<div class='ck-content'><h3>Đồng bằng Bắc Bộ</h3><p>Vựa lúa lớn thứ 2.</p></div>",
+                "is_gis": true,
+                "gis_data": {"question": "Click vào Thủ đô Hà Nội", "lng": 105.8542, "lat": 21.0285, "radius": 20000}
+            }
+            ]
+        }
+        ]
+    }
+    ]
+}

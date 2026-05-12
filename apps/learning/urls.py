@@ -18,4 +18,5 @@ urlpatterns = [
     path('teacher/quiz/add/', views_teacher.quiz_create_view, name='teacher_quiz_add'),
     path('teacher/map/add/', views_teacher.map_create_view, name='teacher_map_add'),
     path('teacher/flashcard/add/', views_teacher.flashcard_create_view, name='teacher_flashcard_add'),
+    path('lesson/<int:lesson_id>/flashcards/', views.flashcard_view, name='flashcards'),
 ]

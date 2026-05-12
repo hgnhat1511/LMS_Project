@@ -57,13 +57,17 @@
                     {{ p.user.username }}
                 </div>
 
-                <div style="width: 25%; text-align: center;">
-                    <span style="background: var(--bg-main); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; color: var(--text-dark); display: inline-block;">
-                        {% if p.tree_level == 1 %}<span style="margin-right: 5px;">🌱</span> Cấp 1{% endif %}
-                        {% if p.tree_level == 2 %}<span style="margin-right: 5px;">🌿</span> Cấp 2{% endif %}
-                        {% if p.tree_level == 3 %}<span style="margin-right: 5px;">🌳</span> Cấp 3{% endif %}
-                        {% if p.tree_level == 4 %}<span style="margin-right: 5px;">🌲</span> Cấp 4{% endif %}
-                        {% if p.tree_level >= 5 %}<span style="margin-right: 5px;">🌟</span> Cấp Tối Đa{% endif %}
+                <div style="width: 25%; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
+                    <span style="background: var(--light-green); border: 1px solid #bbf7d0; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; color: var(--primary-green); display: inline-block;">
+                        {% if p.tree_level < 10 %}🌱
+                        {% elif p.tree_level < 30 %}🌿
+                        {% elif p.tree_level < 60 %}🌳
+                        {% elif p.tree_level < 100 %}🌲
+                        {% else %}🌟{% endif %}
+                        Cấp {{ p.tree_level }}
+                    </span>
+                    <span style="font-size: 12px; font-weight: 600; color: var(--text-gray);">
+                        {{ p.get_tree_stage_display }}
                     </span>
                 </div>
 

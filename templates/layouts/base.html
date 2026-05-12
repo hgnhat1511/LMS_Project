@@ -5,11 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Tree of Wisdom LMS{% endblock %}</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -21,7 +18,6 @@
     </main>
 
     {% include 'layouts/footer.html' %}
-
     {% block extra_js %}{% endblock %}
     
     {% if user.is_authenticated %}
@@ -36,10 +32,19 @@
 
     <script>
         const POMO_DURATION = 25 * 60 * 1000; // 25 phút
+        
+        // Element của Widget góc màn hình
         const timeDisplay = document.getElementById('pomo-time');
         const btnStart = document.getElementById('btn-pomo-start');
         const btnStop = document.getElementById('btn-pomo-stop');
         const widget = document.getElementById('pomodoro-widget');
+
+        // Element của Phòng Lớn (Có thể null nếu ở trang khác)
+        const bigDisplay = document.getElementById('timer-display');
+        const bigBtnStart = document.getElementById('btn-start');
+        const bigBtnStop = document.getElementById('btn-stop');
+        const bigStatus = document.getElementById('status-message');
+
         let timerInterval;
 
         function formatTime(ms) {
@@ -47,6 +52,33 @@
             let m = Math.floor(ms / 60000);
             let s = Math.floor((ms % 60000) / 1000);
             return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Hàm cập nhật giao diện đồng bộ
+        function syncUI(isRunning, remainTime) {
+            let timeStr = formatTime(remainTime);
+            if (!isRunning) timeStr = "25:00";
+
+            // Cập nhật Widget
+            timeDisplay.textContent = timeStr;
+            btnStart.style.display = isRunning ? 'none' : 'block';
+            btnStop.style.display = isRunning ? 'block' : 'none';
+            widget.style.borderColor = isRunning ? '#f59e0b' : '#e8f5e9';
+
+            // Cập nhật Phòng lớn (Nếu đang ở trang pomodoro.html)
+            if (bigDisplay) {
+                bigDisplay.textContent = timeStr;
+                bigBtnStart.style.display = isRunning ? 'none' : 'inline-block';
+                bigBtnStop.style.display = isRunning ? 'inline-block' : 'none';
+                if (isRunning) {
+                    bigStatus.textContent = 'Đang tập trung... Không được đổi tab!';
+                    bigStatus.style.color = '#e67e22';
+                } else {
+                    bigStatus.textContent = 'Sẵn sàng chưa?';
+                    bigStatus.style.color = '#27ae60';
+                    bigBtnStart.textContent = 'Bắt đầu Focus';
+                }
+            }
         }
 
         function sendPomoXp(actionStr) {
@@ -62,33 +94,9 @@
             });
         }
 
-        function checkPomodoro() {
-            let endTime = localStorage.getItem('pomodoro_end');
-            if (endTime) {
-                endTime = parseInt(endTime);
-                let now = Date.now();
-                if (now < endTime) {
-                    btnStart.style.display = 'none';
-                    btnStop.style.display = 'block';
-                    widget.style.borderColor = '#f59e0b'; // Đổi màu viền khi đang chạy
-
-                    timerInterval = setInterval(() => {
-                        let remain = endTime - Date.now();
-                        if (remain <= 0) {
-                            clearInterval(timerInterval);
-                            completePomodoro();
-                        } else {
-                            timeDisplay.textContent = formatTime(remain);
-                        }
-                    }, 1000);
-                } else {
-                    localStorage.removeItem('pomodoro_end');
-                }
-            }
-        }
-
         function completePomodoro() {
             localStorage.removeItem('pomodoro_end');
+            syncUI(false, 0);
             alert("🎉 Chúc mừng! Bạn đã tập trung xuất sắc. (+50 XP)");
             sendPomoXp('success');
         }
@@ -96,29 +104,67 @@
         function failPomodoro() {
             clearInterval(timerInterval);
             localStorage.removeItem('pomodoro_end');
-            alert("❌ BÁO ĐỘNG: Cây đã héo! Bạn vừa rời khỏi web (-20 XP)");
+            syncUI(false, 0);
+            alert("❌ BÁO ĐỘNG: Cây đã héo! Bạn vừa rời tab hoặc bỏ cuộc (-20 XP)");
             sendPomoXp('fail');
         }
 
-        btnStart.addEventListener('click', () => {
+        function startTimerGlobal() {
             localStorage.setItem('pomodoro_end', Date.now() + POMO_DURATION);
             checkPomodoro();
-        });
+        }
 
-        btnStop.addEventListener('click', () => {
+        function stopTimerGlobal() {
             if(confirm("Bỏ cuộc sẽ bị trừ điểm! Bạn chắc chứ?")) {
                 failPomodoro();
             }
-        });
+        }
 
+        function checkPomodoro() {
+            clearInterval(timerInterval);
+            let endTime = localStorage.getItem('pomodoro_end');
+            if (endTime) {
+                endTime = parseInt(endTime);
+                let now = Date.now();
+                if (now < endTime) {
+                    syncUI(true, endTime - now);
+                    timerInterval = setInterval(() => {
+                        let remain = endTime - Date.now();
+                        if (remain <= 0) {
+                            clearInterval(timerInterval);
+                            completePomodoro();
+                        } else {
+                            syncUI(true, remain);
+                        }
+                    }, 1000);
+                } else {
+                    localStorage.removeItem('pomodoro_end');
+                    syncUI(false, 0);
+                }
+            } else {
+                syncUI(false, 0);
+            }
+        }
+
+        // Gắn sự kiện cho Widget
+        btnStart.addEventListener('click', startTimerGlobal);
+        btnStop.addEventListener('click', stopTimerGlobal);
+
+        // Gắn sự kiện cho Phòng lớn (nếu có tồn tại trên trang)
+        if (bigBtnStart) bigBtnStart.addEventListener('click', startTimerGlobal);
+        if (bigBtnStop) bigBtnStop.addEventListener('click', stopTimerGlobal);
+
+        // Chống phạt oan khi chuyển trang nội bộ
         window.addEventListener('beforeunload', () => {
             localStorage.setItem('is_navigating', 'true');
         });
 
         window.addEventListener('load', () => {
             setTimeout(() => localStorage.removeItem('is_navigating'), 1000);
+            checkPomodoro();
         });
 
+        // Chỉ phạt nếu thực sự ẩn tab (đổi tab trình duyệt) và không phải đang tải trang
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
                 let isNavigating = localStorage.getItem('is_navigating');
@@ -129,6 +175,7 @@
             }
         });
 
+        // Khởi động khi load
         checkPomodoro();
     </script>
     {% endif %}
