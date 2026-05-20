@@ -19,6 +19,7 @@ class CustomUser(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    student_class = models.ForeignKey('learning.ClassRoom', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Lớp học")
 
     def __str__(self):
         return f"Profile của {self.user.username}"

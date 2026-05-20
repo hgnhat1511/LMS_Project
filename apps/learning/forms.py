@@ -2,6 +2,7 @@ from django import forms
 
 from apps.gis_maps.models import MapQuestion
 from .models import Lesson, QuizQuestion, Flashcard
+from .models import Grade, ClassRoom
 
 class LessonForm(forms.ModelForm):
     class Meta:
@@ -99,4 +100,24 @@ class FlashcardForm(forms.ModelForm):
         labels = {
             'front_text': 'Mặt trước (Thuật ngữ / Câu hỏi ngắn)',
             'back_text': 'Mặt sau (Định nghĩa / Đáp án)'
+        }
+
+
+# Thêm 2 class này vào cuối file
+class GradeForm(forms.ModelForm):
+    class Meta:
+        model = Grade
+        fields = ['name', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'VD: Khối 10'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Mô tả ngắn...'}),
+        }
+
+class ClassRoomForm(forms.ModelForm):
+    class Meta:
+        model = ClassRoom
+        fields = ['grade', 'name']
+        widgets = {
+            'grade': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'VD: 10A1'}),
         }

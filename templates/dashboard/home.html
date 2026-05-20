@@ -7,19 +7,19 @@
 <div class="container" style="max-width: 1100px; margin: 0 auto; padding: 0 20px;">
     
     <div class="glass-card" style="padding: 60px; text-align: center; margin-bottom: 40px; background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); border: none;">
-        <h1 style="font-size: 48px; font-weight: 800; color: var(--text-dark); margin-bottom: 20px; letter-spacing: -1px;">
-            Chào mừng bạn đến với <span style="color: var(--primary-green);">LMS ĐA MÔN</span>
+        <h1 style="font-size: 48px; font-weight: 800; color: #1e293b; margin-bottom: 20px; letter-spacing: -1px;">
+            Chào mừng bạn đến với <span style="color: #10b981;">LMS ĐA MÔN</span>
         </h1>
-        <p style="font-size: 18px; color: var(--text-gray); max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6;">
+        <p style="font-size: 18px; color: #64748b; max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6;">
             Nền tảng học tập kết hợp trò chơi hóa, giúp bạn chinh phục kiến thức và nuôi dưỡng Cây Trí Tuệ mỗi ngày qua các bài học tương tác và bản đồ GIS.
         </p>
         
         <div style="display: flex; justify-content: center; gap: 20px;">
-            <a href="{% url 'learning:catalog' %}" class="btn-primary" style="padding: 15px 40px; font-size: 18px; box-shadow: 0 10px 20px rgba(10, 92, 54, 0.2);">
+            <a href="{% url 'learning:catalog' %}" class="btn-primary" style="padding: 15px 40px; font-size: 18px; background: #10b981; color: white; border-radius: 12px; text-decoration: none; font-weight: 700; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
                 <i class="fa-solid fa-rocket" style="margin-right: 10px;"></i> Khám phá ngay
             </a>
             {% if not user.is_authenticated %}
-                <a href="{% url 'accounts:login' %}" style="padding: 15px 40px; font-size: 18px; color: var(--primary-green); background: white; border: 2px solid var(--primary-green); border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.2s;">
+                <a href="{% url 'accounts:login' %}" style="padding: 15px 40px; font-size: 18px; color: #10b981; background: white; border: 2px solid #10b981; border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.2s;">
                     Đăng nhập
                 </a>
             {% endif %}
@@ -28,39 +28,45 @@
 
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px;">
         
-        <div class="glass-card" style="padding: 30px; text-align: center; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
-            <div style="width: 70px; height: 70px; background: #dcfce7; color: var(--primary-green); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 30px;">
-                <i class="fa-solid fa-map-location-dot"></i>
+        <a href="{% url 'learning:catalog' %}" style="text-decoration: none; color: inherit; display: block;">
+            <div class="glass-card" style="padding: 30px; text-align: center; transition: transform 0.3s; background: white; cursor: pointer; height: 100%; box-sizing: border-box;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 70px; height: 70px; background: #dcfce7; color: #10b981; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 30px;">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <h3 style="margin-bottom: 15px; color: #1e293b; font-weight: 700;">Học qua Bản đồ</h3>
+                <p style="color: #64748b; font-size: 14px; line-height: 1.5; margin: 0;">Khám phá các bài học Địa lý và Lịch sử thông qua hệ thống bản đồ GIS tương tác sinh động.</p>
             </div>
-            <h3 style="margin-bottom: 15px; color: var(--text-dark);">Học qua Bản đồ</h3>
-            <p style="color: var(--text-gray); font-size: 14px; line-height: 1.5;">Khám phá các bài học Địa lý và Lịch sử thông qua hệ thống bản đồ GIS tương tác sinh động.</p>
-        </div>
+        </a>
 
-        <div class="glass-card" style="padding: 30px; text-align: center; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
-            <div style="width: 70px; height: 70px; background: #fee2e2; color: #ef4444; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 30px;">
-                <i class="fa-solid fa-stopwatch"></i>
+        <a href="{% url 'learning:pomodoro' %}" style="text-decoration: none; color: inherit; display: block;">
+            <div class="glass-card" style="padding: 30px; text-align: center; transition: transform 0.3s; background: white; cursor: pointer; height: 100%; box-sizing: border-box;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 70px; height: 70px; background: #fee2e2; color: #ef4444; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 30px;">
+                    <i class="fa-solid fa-stopwatch"></i>
+                </div>
+                <h3 style="margin-bottom: 15px; color: #1e293b; font-weight: 700;">Pomodoro Focus</h3>
+                <p style="color: #64748b; font-size: 14px; line-height: 1.5; margin: 0;">Rèn luyện sự tập trung cao độ, tích lũy XP để nâng cấp Cây Trí Tuệ của riêng bạn.</p>
             </div>
-            <h3 style="margin-bottom: 15px; color: var(--text-dark);">Pomodoro Focus</h3>
-            <p style="color: var(--text-gray); font-size: 14px; line-height: 1.5;">Rèn luyện sự tập trung cao độ, tích lũy XP để nâng cấp Cây Trí Tuệ của riêng bạn.</p>
-        </div>
+        </a>
 
-        <div class="glass-card" style="padding: 30px; text-align: center; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
-            <div style="width: 70px; height: 70px; background: #fef08a; color: #854d0e; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 30px;">
-                <i class="fa-solid fa-trophy"></i>
+        <a href="{% url 'gamification:leaderboard' %}" style="text-decoration: none; color: inherit; display: block;">
+            <div class="glass-card" style="padding: 30px; text-align: center; transition: transform 0.3s; background: white; cursor: pointer; height: 100%; box-sizing: border-box;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 70px; height: 70px; background: #fef08a; color: #854d0e; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 30px;">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 style="margin-bottom: 15px; color: #1e293b; font-weight: 700;">Bảng Xếp Hạng</h3>
+                <p style="color: #64748b; font-size: 14px; line-height: 1.5; margin: 0;">Thi đua cùng bạn bè, leo Top vinh danh và khẳng định năng lực học tập của bản thân.</p>
             </div>
-            <h3 style="margin-bottom: 15px; color: var(--text-dark);">Bảng Xếp Hạng</h3>
-            <p style="color: var(--text-gray); font-size: 14px; line-height: 1.5;">Thi đua cùng bạn bè, leo Top vinh danh và khẳng định năng lực học tập của bản thân.</p>
-        </div>
+        </a>
 
     </div>
 
     {% if user.is_authenticated %}
-    <div class="glass-card" style="padding: 40px; display: flex; align-items: center; justify-content: space-between; background: var(--primary-green); color: white;">
+    <div class="glass-card" style="padding: 40px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white;">
         <div>
-            <h2 style="margin: 0 0 10px 0; font-size: 24px;">Sẵn sàng học tiếp chưa, {{ user.username }}?</h2>
-            <p style="margin: 0; opacity: 0.9;">Cây Trí Tuệ của bạn đang chờ được tưới nước bằng kiến thức mới đấy!</p>
+            <h2 style="margin: 0 0 10px 0; font-size: 24px; color: white; font-weight: 700;">Sẵn sàng học tiếp chưa, {{ user.username }}?</h2>
+            <p style="margin: 0; opacity: 0.95; color: white; font-size: 16px;">Cây Trí Tuệ của bạn đang chờ được tưới nước bằng kiến thức mới đấy!</p>
         </div>
-        <a href="{% url 'accounts:profile' %}" style="background: white; color: var(--primary-green); padding: 12px 30px; border-radius: 10px; text-decoration: none; font-weight: 700;">
+        <a href="{% url 'accounts:profile' %}" style="background: white; color: #059669; padding: 12px 30px; border-radius: 10px; text-decoration: none; font-weight: 700; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); white-space: nowrap;">
             Vào Khu Vườn ngay
         </a>
     </div>

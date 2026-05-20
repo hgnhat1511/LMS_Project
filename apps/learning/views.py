@@ -42,8 +42,9 @@ def update_pomodoro_xp(request):
                 progress.add_xp(xp_reward)
                 
             elif action == 'fail':
-                # LUẬT MỚI: Sai/Thất bại không bị trừ điểm
-                pass
+                # ĐÃ SỬA: Trừ 20 điểm khi bỏ cuộc hoặc chuyển tab (Đảm bảo không bị số âm)
+                progress.total_xp = max(0, progress.total_xp - 20)
+                progress.save()
                     
             return JsonResponse({
                 'status': 'ok', 

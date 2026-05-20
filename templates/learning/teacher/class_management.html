@@ -1,0 +1,83 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Quản lý Lớp Học - Tree of Wisdom{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 20px;">
+    
+    <div style="margin-bottom: 30px;">
+        <a href="{% url 'learning:teacher_dashboard' %}" style="color: var(--text-gray); text-decoration: none; font-weight: 600;">
+            <i class="fa-solid fa-arrow-left"></i> Quay lại Dashboard
+        </a>
+        <h2 style="color: var(--text-dark); margin: 15px 0 10px 0; font-size: 30px; font-weight: 800;">
+            <i class="fa-solid fa-school" style="color: #0284c7;"></i> Quản lý Khối & Lớp
+        </h2>
+    </div>
+
+    <!-- Thông báo -->
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+        
+        <!-- Form Thêm Khối -->
+        <div class="glass-card" style="padding: 30px;">
+            <h4 style="margin: 0 0 20px 0; color: var(--text-dark);"><i class="fa-solid fa-layer-group"></i> 1. Thêm Khối Học</h4>
+            <form method="POST">
+                {% csrf_token %}
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: 600; font-size: 14px;">Tên Khối</label>
+                    {{ grade_form.name }}
+                </div>
+                <button type="submit" name="btn_add_grade" class="btn-primary" style="width: 100%; background: #0284c7;">Thêm Khối</button>
+            </form>
+        </div>
+
+        <!-- Form Thêm Lớp -->
+        <div class="glass-card" style="padding: 30px;">
+            <h4 style="margin: 0 0 20px 0; color: var(--text-dark);"><i class="fa-solid fa-chalkboard"></i> 2. Thêm Lớp Học</h4>
+            <form method="POST">
+                {% csrf_token %}
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: 600; font-size: 14px;">Chọn Khối</label>
+                    {{ class_form.grade }}
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: 600; font-size: 14px;">Tên Lớp</label>
+                    {{ class_form.name }}
+                </div>
+                <button type="submit" name="btn_add_class" class="btn-primary" style="width: 100%;">Thêm Lớp</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách đang có -->
+    <h3 style="color: var(--text-dark); margin-bottom: 20px;">Danh sách hiện tại</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+        {% for grade in grades %}
+            <div class="glass-card" style="padding: 20px; border-top: 4px solid var(--primary-green);">
+                <h4 style="margin: 0 0 15px 0; font-size: 20px;">{{ grade.name }}</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    {% for cls in grade.classes.all %}
+                        <span style="background: #f1f5f9; padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 14px; border: 1px solid #cbd5e1;">{{ cls.name }}</span>
+                    {% empty %}
+                        <span style="color: var(--text-gray); font-size: 13px;">Chưa có lớp nào.</span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <p style="color: var(--text-gray);">Hệ thống chưa có dữ liệu Khối/Lớp.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- CSS cho form đẹp hơn -->
+<style>
+    .form-control { width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 15px; box-sizing: border-box; }
+</style>
+{% endblock %}

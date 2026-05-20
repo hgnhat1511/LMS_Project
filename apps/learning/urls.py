@@ -19,4 +19,7 @@ urlpatterns = [
     path('teacher/map/add/', views_teacher.map_create_view, name='teacher_map_add'),
     path('teacher/flashcard/add/', views_teacher.flashcard_create_view, name='teacher_flashcard_add'),
     path('lesson/<int:lesson_id>/flashcards/', views.flashcard_view, name='flashcards'),
+    path('teacher/import-students/', views_teacher.import_students_view, name='teacher_import_students'),
+    path('teacher/classes/', views_teacher.class_management_view, name='teacher_classes'),
+    path('teacher/import/excel-lesson/', views_teacher.import_excel_lesson_view, name='teacher_import_excel'),
 ]

@@ -58,3 +58,13 @@ class Flashcard(models.Model):
 
     def __str__(self):
         return f"Flashcard: {self.front_text}"
+    
+
+
+# BẢNG MỚI THÊM: Lớp học cụ thể (Ví dụ: 10A1, 10A2)
+class ClassRoom(models.Model):
+    grade = models.ForeignKey(Grade, on_delete=models.CASCADE, related_name='classes', verbose_name="Khối lớp")
+    name = models.CharField(max_length=50, verbose_name="Tên Lớp (VD: 10A1)")
+
+    def __str__(self):
+        return f"{self.name} ({self.grade.name})"
