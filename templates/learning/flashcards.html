@@ -1,0 +1,45 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Phòng Tập Trung (Pomodoro) - LMS Đa Môn{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 650px; margin: 60px auto; padding: 50px; background: white; border-radius: 24px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); text-align: center; border: 1px solid #e2e8f0; position: relative; overflow: hidden;">
+    
+    <div style="position: absolute; top: -50px; left: -50px; width: 150px; height: 150px; background: #dcfce7; border-radius: 50%; filter: blur(40px); z-index: 0;"></div>
+    <div style="position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px; background: #fee2e2; border-radius: 50%; filter: blur(40px); z-index: 0;"></div>
+
+    <div style="position: relative; z-index: 1;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: #fee2e2; border-radius: 22px; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.15);">
+            <i class="fa-solid fa-stopwatch" style="font-size: 40px; color: #ef4444;"></i>
+        </div>
+        
+        <h2 style="color: #1e293b; margin: 0 0 10px 0; font-size: 32px; font-weight: 800; letter-spacing: -0.5px;">Phòng Tập Trung Tuyệt Đối</h2>
+        <p style="color: #64748b; margin: 0 0 40px 0; font-size: 16px; line-height: 1.6;">
+            Hoàn thành 25 phút Focus để tưới nước cho Cây Trí Tuệ (+50 XP). <br> 
+            <span style="color: #ef4444; font-weight: 700;"><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo: Rời khỏi tab sẽ bị phạt -20 XP!</span>
+        </p>
+
+        <div style="background: linear-gradient(135deg, #ffffff, #f8fafc); width: 280px; height: 280px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto; border: 12px solid #10b981; box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2), inset 0 8px 20px rgba(0,0,0,0.05); transition: 0.3s;">
+            <span id="timer-display" style="font-size: 5.5em; font-weight: 800; font-family: 'Courier New', Courier, monospace; color: #1e293b; letter-spacing: -2px; line-height: 1;">25:00</span>
+            <span style="color: #10b981; font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: 3px; margin-top: 10px;">Focus Time</span>
+        </div>
+
+        <div id="status-message" style="margin-top: 35px; font-weight: 700; font-size: 18px; height: 30px; color: #10b981;">
+            Sẵn sàng chưa?
+        </div>
+
+        <div style="margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
+            <button id="btn-start" style="background-color: #10b981; color: white; border: none; padding: 16px 45px; border-radius: 40px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35); transition: all 0.2s ease;" 
+                    onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 30px rgba(16, 185, 129, 0.45)';" 
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(16, 185, 129, 0.35)';">
+                <i class="fa-solid fa-play" style="margin-right: 8px;"></i> Bắt đầu Focus
+            </button>
+            
+            <button id="btn-stop" style="background-color: #ef4444; color: white; border: none; padding: 16px 45px; border-radius: 40px; font-size: 18px; font-weight: 800; cursor: pointer; display: none; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.35); transition: all 0.2s ease;" 
+                    onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 30px rgba(239, 68, 68, 0.45)';" 
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(239, 68, 68, 0.35)';">
+                <i class="fa-solid fa-stop" style="margin-right: 8px;"></i> Hủy bỏ
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock content %}

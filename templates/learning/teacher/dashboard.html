@@ -91,6 +91,36 @@
             <a href="{% url 'learning:teacher_flashcard_add' %}" class="btn-primary" style="width: 100%; box-sizing: border-box;">Thêm Thẻ &rarr;</a>
         </div>
 
+        <div class="glass-card" style="text-align: center; padding: 30px; transition: 0.2s; background: linear-gradient(135deg, white, #f0fdf4); border: 2px dashed #86efac;" onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='translateY(0)';">
+            <div style="width: 60px; height: 60px; background: #dcfce7; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-solid fa-file-excel" style="font-size: 24px; color: #16a34a;"></i>
+            </div>
+            <h4 style="color: var(--text-dark); margin: 0 0 10px 0; font-size: 18px; font-weight: 700;">Nhập Học Sinh</h4>
+            <p style="color: var(--text-gray); font-size: 14px; margin: 0 0 20px 0; line-height: 1.5; min-height: 45px;">Tạo tài khoản hàng loạt cho học sinh bằng file Excel.</p>
+            <a href="{% url 'learning:teacher_import_students' %}" class="btn-primary" style="background-color: #16a34a; width: 100%; box-sizing: border-box;"><i class="fa-solid fa-upload"></i> Tải file lên</a>
+        </div>
+
+        <!-- Nút sang trang Quản lý Khối & Lớp -->
+        <div class="glass-card" style="text-align: center; padding: 30px; transition: 0.2s;" onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='translateY(0)';">
+            <div style="width: 60px; height: 60px; background: #e0f2fe; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-solid fa-school" style="font-size: 24px; color: #0284c7;"></i>
+            </div>
+            <h4 style="color: var(--text-dark); margin: 0 0 10px 0; font-size: 18px; font-weight: 700;">Quản Lý Lớp Học</h4>
+            <p style="color: var(--text-gray); font-size: 14px; margin: 0 0 20px 0; line-height: 1.5; min-height: 45px;">Thêm Khối và phân Lớp để chuẩn bị nhập học sinh.</p>
+            <a href="{% url 'learning:teacher_classes' %}" class="btn-primary" style="background-color: #0284c7; width: 100%; box-sizing: border-box;">Quản lý ngay &rarr;</a>
+        </div>
+
+        <div class="glass-card" style="text-align: center; padding: 30px; transition: 0.2s;" onmouseover="this.style.transform='translateY(-5px)';" onmouseout="this.style.transform='translateY(0)';">
+            <div style="width: 60px; height: 60px; background: #ecfdf5; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-solid fa-file-excel" style="font-size: 28px; color: #10b981;"></i>
+            </div>
+            <h4 style="color: var(--text-dark); margin: 0 0 10px 0; font-size: 18px; font-weight: 700;">Nhập Ngân Hàng Câu Hỏi</h4>
+            <p style="color: var(--text-gray); font-size: 14px; margin: 0 0 20px 0; line-height: 1.5; min-height: 45px;">Tải lên hàng loạt câu hỏi Trắc nghiệm & Flashcard bằng file Excel.</p>
+            <a href="{% url 'learning:teacher_import_excel' %}" class="btn-primary" style="background-color: #10b981; width: 100%; box-sizing: border-box; display: inline-block; padding: 10px 0; text-align: center; border-radius: 8px; text-decoration: none; color: white; font-weight: 600;">
+                <i class="fa-solid fa-upload"></i> Nhập dữ liệu ngay
+            </a>
+        </div>
+
     </div>
 </div>
 {% endblock content %}
